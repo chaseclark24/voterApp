@@ -197,6 +197,10 @@ body {
     width: 100%;
 }
 
-.captionText {
-   
+.container2 {
+   text-align: center;
+}
+.col-xs-1 {
+
+    text-align: center;
 }
