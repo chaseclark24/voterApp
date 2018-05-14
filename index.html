@@ -1,0 +1,177 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset=utf-8 name="viewport" content="width=device-width, initial-scale=1">
+    <title>Voter</title>
+    <link rel=stylesheet href=css/ui-block.css>
+    <!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+</head>
+<body onload="getVotes()">
+    
+        
+        <br>
+        <p>Do you approve of the President?</p>
+        <br>
+        
+        
+        <br>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-1">
+                        <button type="button" class="glyphicon glyphicon-thumbs-up" id=goodThumb disabled onclick="javascript:voteGood()"></button>
+                        </a>
+                    </p>
+                </div>
+                <div class="col-xs-1">
+                    <p id=good></p>
+                </div>
+                <div class="col-xs-1">
+                    <p id=bad></p>
+                </div>
+                <div class="col-xs-1">
+                    <button type="button" class="glyphicon glyphicon-thumbs-down" id=badThumb disabled onclick="javascript:voteBad()"></button>
+                </div>
+            </div>
+        </div>
+        <br>
+        <p>Unlock your wallet to vote.</p>
+        <br>
+        <div class="col-xs-6">
+            <div class=select-wallet-file></div>
+        </div>
+
+    
+    <br><br>      
+
+   
+
+    <!-- All of these scripts are dependancies from the Nebulas Web Wallet -->
+    <script src=lib/jquery-3.3.1.min.js></script>
+    <script src=lib/nebulas.js></script>
+    <script src=js/1-localSave.js></script>
+    <script src=js/i18n.js data-depends=jquery.slim></script>
+    <script src=js/ui-block.js data-depends="bootbox blockies jquery.slim i18n.js nebulas.js"></script> 
+    
+    <!-- Front end logic for our Dapp -->
+    <script>
+        "use strict";
+
+        // Global variables used by our Dapp
+        var contract_address = "n1yzFue2twRxPKMSjpRgGQbruBjPVGcgqaW";
+        var user_account = null;
+
+        // Gas hard coded for simplicity, ideally your app would allow for changing the gas price, etc.
+        var is_mainnet = false;
+        var nebulas_chain_id, nebulas_domain; 
+        var gas_price = 1000000;
+        var gas_limit = 200000;
+
+        if(is_mainnet) {
+            nebulas_chain_id = 1;
+            nebulas_domain = "https://mainnet.nebulas.io";
+        } else {
+            nebulas_chain_id = 1001;
+            nebulas_domain = "https://testnet.nebulas.io";
+        }
+
+        // The nebulas API, used for signing transactions, etc
+        var nebulas = require("nebulas");
+        var neb = new nebulas.Neb();
+        neb.setRequest(new nebulas.HttpRequest(nebulas_domain));
+
+        // Adds the wallet selection workflow, from the Nebulas wallet
+        uiBlock.insert({
+            selectWalletFile: [".select-wallet-file", onUnlockFile]
+        });
+
+        // Called by the Refresh button
+        function getVotes() {
+            neb.api.call({
+                from: contract_address, // Using the contract here so this can be called without loggin on.
+                to: contract_address,
+                value: 0,
+                nonce: 0, // Nonce is irrelavant when read-only (there is no transaction charge)
+                gasPrice: gas_price,
+                gasLimit: gas_limit,
+                contract: {function: "getVotes"}
+            }).then(function (resp) {
+                var response = JSON.parse(resp.result);
+                if(response) {
+                    $("#rng_request").show();
+                    $("#rng_request_pending").hide();
+                    $("#outcome").text(response);
+                    
+                    var good = response.split("::")[1];
+                    var bad = response.split("::")[0];
+
+                    $("#good").text(good);
+                    $("#bad").text(bad);
+                }
+            });         
+        }
+
+        function voteGood() {
+            // Every transaction has a sequential ID, called 'Nonce'.  Required to sign a message (but not for reading information)
+            neb.api.getAccountState(user_account.getAddressString())
+            .then(function (resp) {
+                var nonce = parseInt(resp.nonce) + 1;
+                var gTx = new nebulas.Transaction(
+                    nebulas_chain_id,
+                    user_account,
+                    contract_address,
+                    0,
+                    nonce,
+                    gas_price,
+                    gas_limit,
+                    {function: "saveVote", args: JSON.stringify([1])}); 
+                gTx.signTransaction();
+                neb.api.sendRawTransaction(gTx.toProtoString())
+                .then( alert("Vote Accepted. Refresh shortly to see update."));
+            });            
+        }
+
+        function voteBad() {
+            // Every transaction has a sequential ID, called 'Nonce'.  Required to sign a message (but not for reading information)
+            neb.api.getAccountState(user_account.getAddressString())
+            .then(function (resp) {
+                var nonce = parseInt(resp.nonce) + 1;
+                var gTx = new nebulas.Transaction(
+                    nebulas_chain_id,
+                    user_account,
+                    contract_address,
+                    0,
+                    nonce,
+                    gas_price,
+                    gas_limit,
+                    {function: "saveVote", args: JSON.stringify([0])}); 
+                gTx.signTransaction();
+                neb.api.sendRawTransaction(gTx.toProtoString())
+                .then(alert("Vote Accepted. Refresh shortly to see update."));
+            });            
+        }
+
+        // Called by the Nebulas library when the user selects their wallet file and enters the password.
+        function onUnlockFile(swf, fileJson, account, password) {
+            account.fromKey(fileJson, password); // Load account information 
+            user_account = account; // Save it in a global variable
+
+            // Enables buttons so the user may now use the Dapp
+            $("#goodThumb").attr("disabled", false);    
+            $("#badThumb").attr("disabled", false);             
+        }
+
+        $("#rng_request").hide();
+
+        if(window.location.search) {
+            onClickRefresh();
+        } else {
+           // $("#rng_request_pending").hide();
+        }
+    </script>
+</body>
+</html>
