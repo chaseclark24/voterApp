@@ -5,14 +5,17 @@ var voter = function() {
 LocalContractStorage.defineMapProperty(this, "voters");
 LocalContractStorage.defineMapProperty(this, "votes");
 LocalContractStorage.defineMapProperty(this, "polls");
-LocalContractStorage.defineMapProperty(this, "Choices");
+LocalContractStorage.defineMapProperty(this, "pollChoices");
+LocalContractStorage.defineMapProperty(this, "pollSeq");
+
 
 }
 
 voter.prototype = {
 	init: function () {
-    var pollSeq=10000000;
+    this.pollSeq.put("seq", "1000000001");
   	},
+
 
 	placeVote: function (poll, choice) {
 		var from = Blockchain.transaction.from;
@@ -28,7 +31,7 @@ voter.prototype = {
 		
 		voteKey = "" + poll + choice;
 
-		current = this.votes.get(checkVotes);
+		current = this.votes.get(voteKey);
 		current = JSON.parse(current);
 		newCount = current + 1;
 
@@ -48,18 +51,18 @@ voter.prototype = {
 		var p3 = "" + pollID + 3;
 		var o3 = this.votes.get(p3);
 
-		var p3 = "" + pollID + 3;
-		var o3 = this.votes.get(p3);
+		var p4 = "" + pollID + 4;
+		var o4 = this.votes.get(p4);
 
 		
 		var outStr = o1 + "::" + o2 + "::" + o3 + "::" + o4;
 		return outStr;
-	}
+	},
 
 	getPoll: function (pollID) {
 		var p1 = this.polls.get(pollID);
 		return p1;
-	}
+	},
 
 	getOptions: function (pollID) {
 		var key = "" + pollID + 1;
@@ -71,20 +74,24 @@ voter.prototype = {
 		var key3 = "" + pollID + 3;
 		var p3 = this.pollChoices.get(key3);
 
-		var ke4 = "" + pollID + 4;
+		var key4 = "" + pollID + 4;
 		var p4 = this.pollChoices.get(key4);
 		
 		var outStr = p1 + "::" + p2 + "::" + p3 + "::" + p4;
 		return outStr;
-	}
+	},
 
 	newPoll: function (string, opt1, opt2, opt3, opt4) {
 		var from = Blockchain.transaction.from;
 
-		var pollID= pollSeq + 1;
-		this.polls.put(Blockchain.pollID, string);
-		pollSeq=pollID;
-		choiceSeqVar=choiceSeq;
+		var pollSeq = this.pollSeq.get("seq");
+		var pollID= Number(pollSeq) + 1;
+
+		this.pollSeq.del("seq");
+		this.pollSeq.put("seq", pollID);
+
+		
+		this.polls.put(pollID, string);
 
 		choiceKey1="" + pollID + 1;
 		this.pollChoices.put(choiceKey1,opt1);
@@ -101,6 +108,8 @@ voter.prototype = {
 		choiceKey4="" + pollID + 4;
 		this.pollChoices.put(choiceKey4,opt4);
 		this.votes.put(choiceKey4,"0");
+
+		return pollID;
 
 	},
 
