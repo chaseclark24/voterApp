@@ -111,7 +111,7 @@ body {
 /* overrides - base.css */
 .logo-main .col:last-child .btn {
     background-color: white;
-    
+    color: #aaa;
     margin: 0 10px 0 0;
     padding: 0;
 }
@@ -203,19 +203,4 @@ body {
 .col-xs-1 {
 
     text-align: center;
-}
-.jumbotron {
- text-align: center;
-
-}
-
-.formDiv{
-    background-color: #C5C9B8;
-    width: 80%;
-    color: #333333;
-    margin: 0 auto;
-    overflow: hidden;
-    padding: 10px 0;
-    align-items: center;
-    
 }
