@@ -1,0 +1,85 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset=utf-8 name="viewport" content="width=device-width, initial-scale=1">
+    <title>Voter</title>
+    <link rel=stylesheet href=css/ui-block.css>
+    <!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+</head>
+<body onload="">
+        
+        
+    <div class = "page-header">
+        <a href="./index.html">
+        <h1 class="glyphicon glyphicon-th-list" > Nebulas Polls</h1>
+        </a>
+    </div>
+
+   
+<div class="container">
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="row">What is the best color?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Green</th>
+      <td>51092</td>
+    </tr>
+    <tr>
+      <th scope="row">Blue</th>
+      <td>123124</td>
+    </tr>
+    <tr>
+      <th scope="row">Red</th>
+      <td>5134</td>
+    </tr>
+    <tr>
+      <th scope="row">Brown</th>
+      <td>515</td>
+    </tr>  
+  </tbody>
+</table>
+</div>
+
+<div class="container">
+<div id="piechart" style="width: 900px; height: 500px;"></div>
+</div>
+   
+
+   
+ 
+    
+ <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Options', 'Count'],
+          ['Green',     3122],
+          ['Blue',      1234],
+          ['Red',  5134],
+          ['Brown', 515]
+        ]);
+
+        var options = {
+          title: 'What is the Best Color?'
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+        chart.draw(data, options);
+      }
+    </script>
+</body>
+</html>
