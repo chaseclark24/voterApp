@@ -32,22 +32,27 @@
     <tr>
       <th scope="row" id="opt1"></th>
       <td id="quant1"></td>
+      <td><button onClick="vote(1);" class="glyphicon glyphicon-menu-up"></button></td>
     </tr>
     <tr>
       <th scope="row" id="opt2"></th>
       <td id="quant2"></td>
+      <td><button onClick="vote(2);" class="glyphicon glyphicon-menu-up"></button></td>
     </tr>
     <tr>
       <th scope="row" id="opt3"></th>
       <td id="quant3"></td>
+      <td><button onClick="vote(3);" class="glyphicon glyphicon-menu-up"></button></td>
     </tr>
     <tr>
       <th scope="row" id="opt4"></th>
       <td id="quant4"></td>
+      <td><button onClick="vote(4);" class="glyphicon glyphicon-menu-up"></button></td>
     </tr>  
   </tbody>
 </table>
 </div>
+
 
 <div class="container">
 <div id="piechart" style="width: 900px; height: 500px;"></div>
@@ -68,23 +73,25 @@
       var nebPay = new NebPay();
       var callbackUrl = NebPay.config.testnetUrl;
 
+      function vote(str) {
+        var path = window.location.href;
+        var pollID = path.split("?")[1]
+        var choice = str;
+         
+        nebPay.call(contract_address, 0, "placeVote", JSON.stringify([pollID, choice]), {
+        callback: callbackUrl,
+        listener: onVote
+        });
+      }
+
+      function onVote(resp){
+        location.reload();
+      }
+
+
       function drawChart() {
 
-        var data = google.visualization.arrayToDataTable([
-          ['Options', 'Count'],
-          ['Green',     3122],
-          ['Blue',      1234],
-          ['Red',  5134],
-          ['Brown', 515]
-        ]);
-
-        var options = {
-          title: 'What is the Best Color?'
-        };
-
-        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-
-        chart.draw(data, options);
+      
       }
 
       var pollName= "";
@@ -101,7 +108,9 @@
 
         function onGetPoll(resp){
       	if(resp){
-      		document.getElementById("pollName").innerHTML = resp.result.replace('"','');
+          pollName= resp.result.replace('"','');
+          pollName = pollName.replace('"','')
+      		document.getElementById("pollName").innerHTML = pollName;
           nebPay.simulateCall(contract_address, 0, "getVotes", JSON.stringify([pollID]), {
           callback: callbackUrl,
           listener: onGetVotes
@@ -157,7 +166,7 @@
           ]);
 
           var options = {
-          title: 'What is the Best Color?'
+          title: pollName
           };
 
           var chart = new google.visualization.PieChart(document.getElementById('piechart'));
@@ -170,9 +179,11 @@
 
       }
 
-    //relocator 9:54
+  
 
       }
+
+     
 
     </script>
 </body>
