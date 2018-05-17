@@ -14,13 +14,29 @@
 <body onload="getPollName()">
         
         
-    <div class = "page-header">
-        <a href="./index.html">
-        <h1 class="glyphicon glyphicon-th-list" > Nebulas Polls</h1>
-        </a>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Nebulas Polls</a>
     </div>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="./index.html">Home <span class="sr-only">(current)</span></a></li>
+        <li><a href="./about.html">About</a></li>
+        <li class="active"><a href="./inputPoll.html">Find Poll</a></li>
+        <li><a href="./main.html">Start Poll</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="https://github.com/nebulasio/web-wallet">Get Wallet</a></li>
+        <li><a href="http://www.givemenas.com/homeold.html">Get NAS</a></li>      
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
 
-   
+     
 <div class="container">
 <table class="table">
   <thead class="thead-dark">
@@ -68,7 +84,7 @@
 
       google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawChart);
-      contract_address='n1kYLC31BZCjWrBesgZFf2GuF3YkrpDTEog';
+      contract_address='n1qjFqQ8i3WSELQK9fF41uzsdmSusyMVU4b';
       var NebPay = require("nebpay");
       var nebPay = new NebPay();
       var callbackUrl = NebPay.config.testnetUrl;
@@ -85,7 +101,7 @@
       }
 
       function onVote(resp){
-        location.reload();
+        
       }
 
 

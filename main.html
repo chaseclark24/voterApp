@@ -4,7 +4,7 @@
 <head>
     <meta charset=utf-8 name="viewport" content="width=device-width, initial-scale=1">
     <title>Voter</title>
-    <link rel=stylesheet href=css/ui-block.css>
+    <link rel=stylesheet href=css/voterStyles.css>
     <!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
@@ -14,13 +14,30 @@
 </head>
 <body onload="">
         
-
-    <div class = "page-header">
-    	<a href="./index.html">
-        <h1 class="glyphicon glyphicon-th-list" aria-hidden="true"> Nebulas Polls</h1>
-    	</a>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Nebulas Polls</a>
     </div>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="./index.html">Home <span class="sr-only">(current)</span></a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="./inputPoll.html">Find Poll</a></li>
+        <li  class="active"><a href="./main.html">Start Poll</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="https://github.com/nebulasio/web-wallet">Get Wallet</a></li>
+        <li><a href="http://www.givemenas.com/homeold.html">Get NAS</a></li>       
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
 
+<div class="container">
+   <div class="jumbotron">
     <form>
     <div class="formDiv">
       <label for="usr">Poll Topic:</label>
@@ -42,9 +59,7 @@
       <label for="pwd">Option 4 (optional):</label>
       <input type="text" class="form-control" id="opt4">
     </div>
-    </form>
-    </div>
-    
+    <br>
     <div class="formDiv"> 
         <div class="row">    
             <div class="col-md-5">
@@ -52,6 +67,12 @@
             </div>
         </div>
     </div>
+    </form>
+    </div>
+   </div>
+</div>
+    
+    
 
 
 
@@ -61,7 +82,7 @@
         "use strict";
 
         // Global variables used by our Dapp
-        var contract_address = "n1kYLC31BZCjWrBesgZFf2GuF3YkrpDTEog";
+        var contract_address = "n1qjFqQ8i3WSELQK9fF41uzsdmSusyMVU4b";
       	var NebPay = require("nebpay");
       	var nebPay = new NebPay();
       	var callbackUrl = NebPay.config.testnetUrl;
@@ -71,17 +92,24 @@
       		var opt2 = document.getElementById("opt2").value; 
       		var opt3 = document.getElementById("opt3").value; 
       		var opt4 = document.getElementById("opt4").value; 
+
       		nebPay.call(contract_address, 0, "newPoll", JSON.stringify([topic, opt1, opt2, opt3, opt4]), {
       		callback: callbackUrl,
       		listener: onSavePoll
       		});
 
-      	function onSavePoll(resp){
-      		pollName= resp.result.replace('"','');
-          	pollName = pollName.replace('"','')
-          	alert(pollName)
-      		window.location = location.protocol + '//' + location.host + "/C:/Users/Chase/Documents/websiteDocs/nebulasApps/voter/pollView.html" + '?' + pollName;
+      	
       	}
+
+      	function onSavePoll(resp){
+      		nebPay.simulateCall(contract_address, 0, "getPollID", JSON.stringify([]), {
+      		callback: callbackUrl,
+      		listener: onGetPollID
+      		});
+      		function onGetPollID(resp){
+      			//alert(resp.result)
+      			window.location = location.protocol + '//' + location.host + "/C:/Users/Chase/Documents/websiteDocs/nebulasApps/voter/pollInfo.html" + '?' + resp.result;
+      		}
 
 
 

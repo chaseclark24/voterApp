@@ -4,15 +4,14 @@
 <head>
     <meta charset=utf-8 name="viewport" content="width=device-width, initial-scale=1">
     <title>Voter</title>
-    <link rel=stylesheet href=css/voterStyles.css>
+    <link rel=stylesheet href=css/ui-block.css>
     <!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
 	<!-- Optional theme -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 </head>
-<body onload="">
-
+<body onload="info()">
         
         
 <nav class="navbar navbar-default">
@@ -24,27 +23,29 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Home <span class="sr-only">(current)</span></a></li>
+        <li><a href="./index.html">Home <span class="sr-only">(current)</span></a></li>
         <li><a href="./about.html">About</a></li>
         <li><a href="./inputPoll.html">Find Poll</a></li>
-        <li><a href="./main.html">Start Poll</a></li>
+        <li  class="active"><a href="./main.html">Start Poll</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="https://github.com/nebulasio/web-wallet">Get Wallet</a></li>
-        <li><a href="http://www.givemenas.com/homeold.html">Get NAS</a></li>       
+        <li><a href="http://www.givemenas.com/homeold.html">Get NAS</a></li>      
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
+   
 
     <div class="container">
         <div class="jumbotron">
-            <div class="btn-group">
-                <a href="./main.html" class="btn btn-primary btn-lg">
-                    <i class="glyphicon glyphicon-th-list" aria-hidden="true"></i> Start a New Poll
-                </a>
-                <a href="./inputPoll.html" class="btn btn-info btn-lg">Find a Poll <i class="glyphicon glyphicon-search" aria-hidden="true"></i></a>
-            </div>
+           <p>Your Poll ID is :</p>
+           <p id="pollID"></p>
+
+           <p>This is a unique identifier for your poll. You can use it to open the poll or share the poll with others.</p>
+           <p>Here is a link to your poll: </p>
+            <button type="button" onClick="changeURL();">Navigate to Poll<i class="glyphicon glyphicon-search" aria-hidden="true"></i></button>
+
         </div>
     </div>
 
@@ -52,15 +53,32 @@
 
    
 
+    <!-- All of these scripts are dependancies from the Nebulas Web Wallet -->
     <script src=lib/jquery-3.3.1.min.js></script>
-
+    
     
     <!-- Front end logic for our Dapp -->
-    <script>
+    <script type="text/javascript">
 
-    function relocate_main()
-    {
-        location.href=
+    function info(){
+        var path = window.location.href;
+        var pollID = path.split("?")[1]
+        document.getElementById("pollID").innerHTML = pollID;
+        
+
+    }
+
+    function changeURL(){
+        var path = window.location.href;
+        var pollID = path.split("?")[1]
+        document.getElementById("pollID").innerHTML = pollID;
+
+        
+       // location.pathname is the variable containing long str below
+        window.location = location.protocol + '//' + location.host + "/C:/Users/Chase/Documents/websiteDocs/nebulasApps/voter/pollView.html" + '?' + pollID;
+
+        
+
     }
         
     </script>
