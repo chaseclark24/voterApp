@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta charset=utf-8 name="viewport" content="width=device-width, initial-scale=1">
-    <title>Voter</title>
+    <title>Neb Poll</title>
     <!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
@@ -55,12 +55,12 @@
       <td id="quant2"></td>
       <td><button onClick="vote(2);" class="glyphicon glyphicon-menu-up"></button></td>
     </tr>
-    <tr>
+    <tr id="opt3row">
       <th scope="row" id="opt3"></th>
       <td id="quant3"></td>
       <td><button onClick="vote(3);" class="glyphicon glyphicon-menu-up"></button></td>
     </tr>
-    <tr>
+    <tr id="opt4row">
       <th scope="row" id="opt4"></th>
       <td id="quant4"></td>
       <td><button onClick="vote(4);" class="glyphicon glyphicon-menu-up"></button></td>
@@ -171,7 +171,16 @@
           document.getElementById("opt2").innerHTML = opt2;
           document.getElementById("opt3").innerHTML = opt3;
           document.getElementById("opt4").innerHTML = opt4.replace('"','');
-        
+         
+          if (!opt3)
+            var opt3html = document.getElementById("opt3row");
+            opt3html.style.display = "none";
+            var opt4html = document.getElementById("opt4row");
+            opt4html.style.display = "none";
+
+          if (!opt4)
+            var opt4html = document.getElementById("opt4row");
+            opt4html.style.display = "none";
 
           var data = google.visualization.arrayToDataTable([
           ['Options', 'Count'],
