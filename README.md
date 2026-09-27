@@ -1,40 +1,47 @@
+# Nebulas Polling App
 
-# web-wallet
+A decentralized polling application built on the Nebulas blockchain in 2018.
 
-Nebulas wallet for the web. Nebulas users can use it to send transactions and submit smart contracts.
+> **Status:** Historical source only. [Nebulas ended its mainnet service](https://www.nebulas.io/) in December 2024, so creating polls and casting votes no longer works against the original network.
 
-Nebulas already has a JavaScript library [neb.js](https://github.com/nebulasio/neb.js) that implements address generation, transaction signing, and submission. Web-wallet implemented using this library.
+## What the application did
 
-### Feature list
+- Created polls with two required choices and up to two optional choices.
+- Assigned each poll a sequential ID.
+- Stored poll topics, choices, and vote totals in contract storage.
+- Limited each wallet address to one vote per poll.
+- Retrieved poll data through read-only contract calls.
+- Displayed results in a Google Charts pie chart.
 
-- generate nebulas address/keystore;
-- send transaction;
-- send offine transaction;
-- view address/keystore info;
-- view transaction status & info;
-- deploy/call smart contract;
-- choose nebulas network(Mainnet, Testnet etc.).
+## How it worked
 
-### TODO list
-- Multiple wallet address import methods.
-- Send transaction (NRC20) [send NAS has done.]
+```text
+Browser + Nebulas wallet
+        |
+        v
+NebPay transaction
+        |
+        v
+voterV2.js smart contract -> persistent polls and vote totals
+```
 
+Creating a poll or voting submitted a blockchain transaction. Reading a poll used a simulated contract call and did not change chain state.
 
-Thanks to @luoman for implementing a pre-version [naswallet](https://github.com/nebulasio/explorer/tree/master/nasWallet) for us.
+## Important files
 
-## Contribution
+- `voterV2.js` — latest polling smart contract.
+- `presVoter.js` — earlier contract iteration.
+- `main.html` — poll creation flow.
+- `inputPoll.html` and `pollView.html` — poll lookup, voting, and results.
+- `nebPay.js` and `dist/nebPay.js` — original Nebulas payment integration.
 
-We are very glad that you are considering to help Nebulas Team, including but not limited to source code, documents or others.
+## Technology
 
-If you'd like to contribute, please fork, fix, commit and send a pull request for the maintainers to review and merge into the main code base. If you wish to submit more complex changes though, please check up with the core devs first on our [slack channel](http://nebulasio.herokuapp.com) to ensure those changes are in line with the general philosophy of the project and/or get some early feedback which can make both your efforts much lighter as well as our review and merge procedures quick and simple.
+- JavaScript
+- Nebulas smart contracts and NebPay
+- HTML and Bootstrap
+- Google Charts
 
-Please refer to our [contribution guideline](https://github.com/nebulasio/wiki/blob/master/contribute.md) for more information.
+## Historical note
 
-Thanks.
-
-## License
-
-The go-nebulas project is licensed under the [GNU Lesser General Public License Version 3.0 (“LGPL v3”)](https://www.gnu.org/licenses/lgpl-3.0.en.html).
-
-For the more information about licensing, please refer to [Licensing](https://github.com/nebulasio/wiki/blob/master/licensing.md) page..
-
+This repository is preserved to explain the original contract model and browser integration. Its bundled wallet libraries, faucet links, and network endpoints are obsolete and should not be used for current cryptocurrency activity.
